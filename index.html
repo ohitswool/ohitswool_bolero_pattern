@@ -12,8 +12,9 @@
   <!-- Markdown renderer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-  <!-- HTML to PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- Selectable-text PDF generator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.23/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.23/vfs_fonts.js"></script>
 </head>
 
 <body>
@@ -46,32 +47,67 @@
 
       <div class="measurement-title">Your measurements</div>
       <div class="measurement-box">
-
-
         <div class="measurement-row">
-          <label for="bust">bust</label>
-          <input id="bust" type="number" value="83">
-          <span>cm</span>
+          <a class="measurement-photo" href="assets/measurement-bust.png" target="_blank" rel="noopener"
+            aria-label="Open the bust measurement photo">
+            <img src="assets/measurement-bust.png" alt="Measuring around the fullest part of the bust">
+          </a>
+          <div class="measurement-entry">
+            <label for="bust">bust</label>
+            <p>Measure around the fullest part, keeping the tape level.</p>
+            <div class="measurement-control">
+              <input id="bust" type="number" value="83">
+              <span>cm</span>
+            </div>
+          </div>
         </div>
 
         <div class="measurement-row">
-          <label for="shoulder">shoulder seam width</label>
-          <input id="shoulder" type="number" value="28">
-          <span>cm</span>
+          <a class="measurement-photo" href="assets/measurement-shoulder.png" target="_blank" rel="noopener"
+            aria-label="Open the shoulder seam width measurement photo">
+            <img src="assets/measurement-shoulder.png" alt="Measuring from one outer shoulder to the other">
+          </a>
+          <div class="measurement-entry">
+            <label for="shoulder">shoulder seam width</label>
+            <p>Measure from one shoulder seam to the other—not the outer edges of your shoulders. Wear a
+              well-fitting tank top as a guide.</p>
+            <div class="measurement-control">
+              <input id="shoulder" type="number" value="28">
+              <span>cm</span>
+            </div>
+          </div>
         </div>
 
         <div class="measurement-row">
-          <label for="armhole">armhole</label>
-          <input id="armhole" type="number" value="38">
-          <span>cm</span>
+          <a class="measurement-photo" href="assets/measurement-armhole.png" target="_blank" rel="noopener"
+            aria-label="Open the armhole measurement photo">
+            <img src="assets/measurement-armhole.png" alt="Measuring around the shoulder and underarm">
+          </a>
+          <div class="measurement-entry">
+            <label for="armhole">armhole</label>
+            <p>Loop the tape over the top of your shoulder and under your arm. Keep your arm relaxed and the tape
+              comfortably not too tight.</p>
+            <div class="measurement-control">
+              <input id="armhole" type="number" value="38">
+              <span>cm</span>
+            </div>
+          </div>
         </div>
 
         <div class="measurement-row">
-          <label for="upperArm">upper arm circ.</label>
-          <input id="upperArm" type="number" value="24.5">
-          <span>cm</span>
+          <a class="measurement-photo" href="assets/measurement-upper-arm.png" target="_blank" rel="noopener"
+            aria-label="Open the upper arm circumference measurement photo">
+            <img src="assets/measurement-upper-arm.png" alt="Measuring around the fullest part of the upper arm">
+          </a>
+          <div class="measurement-entry">
+            <label for="upperArm">upper arm circumference</label>
+            <p>Measure around your upper arm while keeping your arm relaxed.</p>
+            <div class="measurement-control">
+              <input id="upperArm" type="number" value="24.5" step="0.1">
+              <span>cm</span>
+            </div>
+          </div>
         </div>
-
 
       </div>
       <div class="gauge-title">Your gauge</div>
@@ -124,8 +160,9 @@
         </div>
         <span>Updates automatically</span>
       </div>
-      <div id="preview" class="pattern-preview">
-        Loading pattern...
+      <div class="pdf-preview-shell">
+        <div id="previewStatus" class="pdf-preview-status" role="status">Preparing paginated preview…</div>
+        <iframe id="preview" class="pdf-preview-frame" title="Paginated custom pattern preview"></iframe>
       </div>
     </section>
   </main>

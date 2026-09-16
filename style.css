@@ -73,6 +73,10 @@ body {
 .form-panel {
     position: sticky;
     top: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    box-sizing: border-box;
     background: #f8f4ed;
     padding: 28px;
     border: 1px solid rgba(87, 68, 52, 0.13);
@@ -155,7 +159,7 @@ button span {
 }
 
 .measurement-box {
-    padding: 4px 16px 12px;
+    padding: 4px 14px;
     border: 1px solid #d9cec1;
     border-radius: 14px;
     background: #fffdf9;
@@ -163,10 +167,10 @@ button span {
 
 .measurement-row {
     display: grid;
-    grid-template-columns: 1fr 68px 22px;
+    grid-template-columns: 82px minmax(0, 1fr);
     align-items: center;
-    gap: 7px;
-    padding: 10px 0;
+    gap: 12px;
+    padding: 13px 0;
     border-bottom: 1px solid #eee6dc;
 }
 
@@ -174,7 +178,28 @@ button span {
     border-bottom: 0;
 }
 
-.measurement-row label {
+.measurement-photo {
+    display: block;
+    overflow: hidden;
+    width: 82px;
+    height: 102px;
+    border-radius: 10px;
+    background: #e9ded2;
+}
+
+.measurement-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.measurement-entry {
+    min-width: 0;
+}
+
+.measurement-entry label {
+    display: block;
     margin: 0;
     color: #554940;
     font-weight: 650;
@@ -182,7 +207,20 @@ button span {
     text-align: left;
 }
 
-.measurement-row input {
+.measurement-entry p {
+    margin: 4px 0 9px;
+    color: #796c62;
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+.measurement-control {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.measurement-control input {
     width: 68px;
     margin: 0;
     padding: 9px 8px;
@@ -194,7 +232,7 @@ button span {
     box-sizing: border-box;
 }
 
-.measurement-row span {
+.measurement-control span {
     color: #8c7d71;
     font-size: 12px;
 }
@@ -274,6 +312,44 @@ button span {
     text-transform: uppercase;
 }
 
+.pdf-preview-shell {
+    position: relative;
+    min-height: 760px;
+    overflow: hidden;
+    border: 1px solid rgba(92, 70, 50, 0.16);
+    border-radius: 12px;
+    background: #6f675f;
+    box-shadow: 0 8px 28px rgba(55, 37, 24, 0.16);
+}
+
+.pdf-preview-frame {
+    display: block;
+    width: 100%;
+    height: min(82vh, 980px);
+    min-height: 760px;
+    border: 0;
+    background: #6f675f;
+}
+
+.pdf-preview-status {
+    position: absolute;
+    z-index: 2;
+    top: 14px;
+    left: 50%;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(48, 39, 32, 0.9);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.pdf-preview-status[hidden] {
+    display: none;
+}
+
 .pattern-preview {
     max-width: 700px;
     margin: 0 auto;
@@ -319,13 +395,17 @@ button span {
 
 .pattern-rows {
     margin-left: clamp(1.25rem, 8%, 4.5rem);
+    padding: 0;
+    list-style: none;
 }
 
-.pattern-rows p {
+.pattern-rows p,
+.pattern-rows li {
     margin: 0.25rem 0;
 }
 
-.pattern-rows strong {
+.pattern-rows strong,
+.pattern-rows li strong {
     font-weight: 750;
 }
 
@@ -336,7 +416,48 @@ button span {
 
 .pattern-preview .pattern-note {
     margin: 2rem 0 1rem;
+    padding: 0;
+    border: 0;
     font-weight: 650;
+}
+
+.pattern-preview .pattern-note p {
+    margin: 0;
+}
+
+.pattern-preview .pattern-callout {
+    margin: 1.5rem 0 2rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid rgba(143, 41, 232, 0.22);
+    border-left: 4px solid #8f29e8;
+    border-radius: 10px;
+    background: #f8f1fd;
+    box-shadow: 0 5px 16px rgba(89, 51, 111, 0.08);
+    color: #514258;
+    font-size: 0.92em;
+}
+
+.pattern-preview .pattern-callout p {
+    margin: 0.35rem 0;
+}
+
+.pattern-preview .pattern-callout p:first-child strong {
+    display: block;
+    color: #49364f;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.08rem;
+    font-weight: 600;
+}
+
+.pattern-preview img:not(.pattern-logo) {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(100%, 520px);
+    max-height: 420px;
+    margin: 1.5rem auto;
+    object-fit: contain;
+    border-radius: 8px;
 }
 
 .pattern-diagram-placeholder {
@@ -359,43 +480,6 @@ button span {
 
 .pattern-diagram-placeholder span {
     font-size: 0.875rem;
-}
-
-.pdf-export-host {
-    position: fixed;
-    z-index: -10000;
-    top: 0;
-    left: 0;
-    width: 7.5in;
-    pointer-events: none;
-}
-
-.pattern-preview.pdf-export {
-    width: 7.5in;
-    max-width: none;
-    margin: 0;
-    padding: 0 0.2in;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    box-sizing: border-box;
-    font-size: 11pt;
-    line-height: 1.5;
-}
-
-.pdf-export h2,
-.pdf-export hr {
-    break-after: avoid-page;
-    page-break-after: avoid;
-}
-
-.pdf-export table,
-.pdf-export .pattern-brand,
-.pdf-export .pattern-instruction-block,
-.pdf-export .pattern-diagram-placeholder,
-.pdf-export .pattern-note {
-    break-inside: avoid-page;
-    page-break-inside: avoid;
 }
 
 .pattern-preview table {
@@ -505,10 +589,18 @@ button span {
 
     .form-panel {
         position: static;
+        max-height: none;
+        overflow: visible;
+        scrollbar-gutter: auto;
     }
 
     .preview-panel {
         padding: 12px;
+    }
+
+    .pdf-preview-shell,
+    .pdf-preview-frame {
+        min-height: 70vh;
     }
 
     .preview-heading {
