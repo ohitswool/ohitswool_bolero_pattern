@@ -15,6 +15,9 @@
   <!-- Selectable-text PDF generator -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.23/pdfmake.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.23/vfs_fonts.js"></script>
+
+  <!-- Reliable page-by-page PDF preview on phones -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 
 <body>
@@ -280,6 +283,15 @@
       <div class="pdf-preview-shell">
         <div id="previewStatus" class="pdf-preview-status" role="status">Preparing paginated preview…</div>
         <iframe id="preview" class="pdf-preview-frame" title="Paginated custom pattern preview"></iframe>
+        <div id="mobilePdfPreview" class="mobile-pdf-preview" hidden>
+          <div class="mobile-pdf-controls" aria-label="PDF page controls">
+            <button id="previousPdfPage" type="button">← Previous</button>
+            <span id="pdfPageIndicator" aria-live="polite">Page 1</span>
+            <button id="nextPdfPage" type="button">Next →</button>
+          </div>
+          <canvas id="mobilePdfCanvas" aria-label="Custom pattern PDF page"></canvas>
+          <p class="mobile-pdf-hint">Swipe the page or use the buttons to flip through the pattern.</p>
+        </div>
       </div>
     </section>
   </main>

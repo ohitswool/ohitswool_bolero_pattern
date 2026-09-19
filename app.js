@@ -3,6 +3,11 @@ let currentPdfBlob = null;
 let currentPdfUrl = "";
 let previewTimer = null;
 let renderVersion = 0;
+let mobilePdfDocument = null;
+let mobilePdfPageNumber = 1;
+let mobilePdfRenderTask = null;
+let mobilePdfPageRenderVersion = 0;
+let mobileSwipeStartX = null;
 
 const imageDataCache = new Map();
 const pdfColors = {
@@ -14,6 +19,12 @@ const pdfColors = {
     purpleTint: "#F8F1FD"
 };
 const instagramUrl = "https://www.instagram.com/ohitswool/";
+const mobilePreviewQuery = window.matchMedia("(max-width: 800px)");
+
+if (window.pdfjsLib) {
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+}
 
 async function loadPatternTemplate() {
     const response = await fetch("pattern.md");
@@ -736,6 +747,99 @@ function createPdfBlob(documentDefinition) {
     });
 }
 
+function updateMobilePdfControls() {
+    const pageCount = mobilePdfDocument?.numPages ?? 0;
+    const indicator = document.getElementById("pdfPageIndicator");
+    const previousButton = document.getElementById("previousPdfPage");
+    const nextButton = document.getElementById("nextPdfPage");
+
+    indicator.textContent = pageCount
+        ? `Page ${mobilePdfPageNumber} of ${pageCount}`
+        : "Page 1";
+    previousButton.disabled = mobilePdfPageNumber <= 1;
+    nextButton.disabled = !pageCount || mobilePdfPageNumber >= pageCount;
+}
+
+async function renderMobilePdfPage(pageNumber, version = renderVersion) {
+    if (!mobilePdfDocument) return;
+
+    const pageRenderVersion = ++mobilePdfPageRenderVersion;
+    const pageCount = mobilePdfDocument.numPages;
+    mobilePdfPageNumber = Math.min(Math.max(pageNumber, 1), pageCount);
+    updateMobilePdfControls();
+
+    if (mobilePdfRenderTask) {
+        mobilePdfRenderTask.cancel();
+        mobilePdfRenderTask = null;
+    }
+
+    const page = await mobilePdfDocument.getPage(mobilePdfPageNumber);
+    if (version !== renderVersion || pageRenderVersion !== mobilePdfPageRenderVersion) return;
+
+    const canvas = document.getElementById("mobilePdfCanvas");
+    const preview = document.getElementById("mobilePdfPreview");
+    const context = canvas.getContext("2d", { alpha: false });
+    const unscaledViewport = page.getViewport({ scale: 1 });
+    const availableWidth = Math.max(260, preview.clientWidth - 20);
+    const cssScale = availableWidth / unscaledViewport.width;
+    const outputScale = Math.min(window.devicePixelRatio || 1, 2);
+    const renderViewport = page.getViewport({ scale: cssScale * outputScale });
+
+    canvas.width = Math.floor(renderViewport.width);
+    canvas.height = Math.floor(renderViewport.height);
+    canvas.style.width = `${Math.floor(renderViewport.width / outputScale)}px`;
+    canvas.style.height = `${Math.floor(renderViewport.height / outputScale)}px`;
+    canvas.setAttribute("aria-label", `Custom pattern PDF, page ${mobilePdfPageNumber} of ${pageCount}`);
+
+    const renderTask = page.render({
+        canvasContext: context,
+        viewport: renderViewport
+    });
+    mobilePdfRenderTask = renderTask;
+
+    try {
+        await renderTask.promise;
+    } catch (error) {
+        if (error?.name !== "RenderingCancelledException") throw error;
+    } finally {
+        if (mobilePdfRenderTask === renderTask) mobilePdfRenderTask = null;
+    }
+}
+
+async function showMobilePdfPreview(blob, version) {
+    const iframe = document.getElementById("preview");
+    const mobilePreview = document.getElementById("mobilePdfPreview");
+
+    iframe.hidden = true;
+    mobilePreview.hidden = false;
+
+    if (!window.pdfjsLib) {
+        throw new Error("The mobile PDF viewer did not load.");
+    }
+
+    const pdfData = new Uint8Array(await blob.arrayBuffer());
+    const nextDocument = await window.pdfjsLib.getDocument({ data: pdfData }).promise;
+
+    if (version !== renderVersion) {
+        await nextDocument.destroy();
+        return;
+    }
+
+    if (mobilePdfDocument) await mobilePdfDocument.destroy();
+    mobilePdfDocument = nextDocument;
+    mobilePdfPageNumber = 1;
+    await renderMobilePdfPage(1, version);
+}
+
+function showDesktopPdfPreview() {
+    const iframe = document.getElementById("preview");
+    const mobilePreview = document.getElementById("mobilePdfPreview");
+
+    mobilePreview.hidden = true;
+    iframe.hidden = false;
+    iframe.src = `${currentPdfUrl}#page=1&zoom=page-width&toolbar=1`;
+}
+
 async function updatePreview() {
     if (!patternTemplate) return null;
 
@@ -759,10 +863,20 @@ async function updatePreview() {
         currentPdfBlob = blob;
         currentPdfUrl = URL.createObjectURL(blob);
 
-        preview.addEventListener("load", () => {
-            status.hidden = true;
-        }, { once: true });
-        preview.src = `${currentPdfUrl}#page=1&zoom=page-width&toolbar=1`;
+        if (mobilePreviewQuery.matches) {
+            try {
+                await showMobilePdfPreview(blob, version);
+                if (version === renderVersion) status.hidden = true;
+            } catch (previewError) {
+                console.error("Unable to show the mobile PDF preview:", previewError);
+                status.textContent = "Preview unavailable on this phone. Download still works.";
+            }
+        } else {
+            preview.addEventListener("load", () => {
+                status.hidden = true;
+            }, { once: true });
+            showDesktopPdfPreview();
+        }
 
         return blob;
     } catch (error) {
@@ -826,8 +940,44 @@ async function downloadPDF() {
 
 document.getElementById("downloadBtn").addEventListener("click", downloadPDF);
 
+document.getElementById("previousPdfPage").addEventListener("click", () => {
+    renderMobilePdfPage(mobilePdfPageNumber - 1);
+});
+
+document.getElementById("nextPdfPage").addEventListener("click", () => {
+    renderMobilePdfPage(mobilePdfPageNumber + 1);
+});
+
+const mobilePdfCanvas = document.getElementById("mobilePdfCanvas");
+
+mobilePdfCanvas.addEventListener("touchstart", event => {
+    mobileSwipeStartX = event.changedTouches[0]?.clientX ?? null;
+}, { passive: true });
+
+mobilePdfCanvas.addEventListener("touchend", event => {
+    if (mobileSwipeStartX === null) return;
+
+    const endX = event.changedTouches[0]?.clientX ?? mobileSwipeStartX;
+    const distance = endX - mobileSwipeStartX;
+    mobileSwipeStartX = null;
+
+    if (Math.abs(distance) < 45) return;
+    renderMobilePdfPage(mobilePdfPageNumber + (distance < 0 ? 1 : -1));
+}, { passive: true });
+
+const handlePreviewModeChange = () => {
+    if (currentPdfBlob) updatePreview();
+};
+
+if (mobilePreviewQuery.addEventListener) {
+    mobilePreviewQuery.addEventListener("change", handlePreviewModeChange);
+} else {
+    mobilePreviewQuery.addListener(handlePreviewModeChange);
+}
+
 window.addEventListener("beforeunload", () => {
     if (currentPdfUrl) URL.revokeObjectURL(currentPdfUrl);
+    mobilePdfDocument?.destroy();
 });
 
 loadPatternTemplate();
