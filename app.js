@@ -13,6 +13,7 @@ const pdfColors = {
     purple: "#8F29E8",
     purpleTint: "#F8F1FD"
 };
+const instagramUrl = "https://www.instagram.com/ohitswool/";
 
 async function loadPatternTemplate() {
     const response = await fetch("pattern.md");
@@ -67,11 +68,13 @@ function formatPattern(markdown) {
 
     if (logo && title?.tagName === "H1") {
         logo.classList.add("pattern-logo");
+        const logoLink = logo.closest("a");
+        logoLink?.classList.add("pattern-logo-link");
 
         const brand = document.createElement("div");
         brand.className = "pattern-brand";
         logoParagraph.replaceWith(brand);
-        brand.append(logo, title);
+        brand.append(logoLink ?? logo, title);
     }
 
     container.querySelectorAll("blockquote").forEach(blockquote => {
@@ -103,12 +106,68 @@ function formatPattern(markdown) {
             || blockquoteText.startsWith("Pickup guide")
             || blockquoteText.startsWith("Share your bolero")
             || blockquoteText.startsWith("Sleeve seaming guide")
+            || blockquoteText.startsWith("Before you begin")
         ) {
-            blockquote.className = "pattern-callout";
+            blockquote.className = blockquoteText.startsWith("Share your bolero")
+                ? "pattern-callout pattern-share-callout"
+                : "pattern-callout";
         } else {
             blockquote.className = "pattern-note";
         }
     });
+
+    const keepSectionStartTogether = (headingText, followingSiblingCount) => {
+        const heading = Array.from(container.querySelectorAll("h2"))
+            .find(candidate => candidate.textContent.trim() === headingText);
+
+        if (!heading) return;
+
+        const sectionElements = [heading];
+        let nextElement = heading.nextElementSibling;
+
+        for (let index = 0; index < followingSiblingCount && nextElement; index += 1) {
+            sectionElements.push(nextElement);
+            nextElement = nextElement.nextElementSibling;
+        }
+
+        const sectionStart = document.createElement("div");
+        sectionStart.className = "pattern-section-start";
+        heading.before(sectionStart);
+        sectionStart.append(...sectionElements);
+    };
+
+    keepSectionStartTogether("Neckline I-Cord Edging", 1);
+    keepSectionStartTogether("Sleeves", 2);
+    keepSectionStartTogether("Front Right (Buttonhole Side)", 2);
+    keepSectionStartTogether("Front Left (Button Side)", 2);
+    keepSectionStartTogether("Join Front Left, Back and Front Right", 3);
+
+    const pairedImages = Array.from(
+        container.querySelectorAll('img[title~="pdf-pair"]')
+    );
+
+    for (let index = 0; index < pairedImages.length; index += 2) {
+        const firstParagraph = pairedImages[index]?.closest("p");
+        const secondParagraph = pairedImages[index + 1]?.closest("p");
+
+        if (!firstParagraph || !secondParagraph) continue;
+
+        const possibleCaption = firstParagraph.previousElementSibling;
+        const caption = possibleCaption?.tagName === "P"
+            && possibleCaption.textContent.trim().startsWith("This is what the completed sleeve-cap pleats")
+            ? possibleCaption
+            : null;
+        const pair = document.createElement("div");
+        pair.className = "pattern-image-pair";
+        (caption ?? firstParagraph).before(pair);
+
+        if (caption) {
+            caption.className = "pattern-image-pair-caption";
+            pair.append(caption);
+        }
+
+        pair.append(firstParagraph, secondParagraph);
+    }
 
     container.querySelectorAll("ul").forEach(rows => {
         rows.className = "pattern-rows";
@@ -123,13 +182,34 @@ function formatPattern(markdown) {
             previousText.startsWith("Repeat")
             || previousText.startsWith("If ")
             || previousText.endsWith(":");
+        const isShortSectionHeading =
+            previous?.tagName === "P"
+            && previous.children.length === 1
+            && previous.firstElementChild?.tagName === "STRONG";
 
-        if (previous?.tagName === "P" && introducesRows) {
+        if (previous?.tagName === "P" && (introducesRows || isShortSectionHeading)) {
             previous.className = "pattern-repeat";
             block.append(previous);
         }
 
         block.append(rows);
+    });
+
+    container.querySelectorAll('img[title~="pdf-aside"]').forEach(image => {
+        const imageParagraph = image.closest("p");
+        const instructionElement = imageParagraph?.previousElementSibling;
+        const canSitBesideImage =
+            instructionElement?.classList.contains("pattern-instruction-block")
+            || instructionElement?.tagName === "P";
+
+        if (!imageParagraph || !canSitBesideImage) {
+            return;
+        }
+
+        const aside = document.createElement("div");
+        aside.className = "pattern-image-aside";
+        instructionElement.before(aside);
+        aside.append(instructionElement, imageParagraph);
     });
 
     container.querySelectorAll("p").forEach(paragraph => {
@@ -285,7 +365,7 @@ async function elementToPdf(element) {
         };
 
         if (level === 2 && element.textContent.trim() === "Finishing") {
-            heading.pageBreak = "before";
+            heading.margin = [0, 8, 0, 4];
         }
 
         return heading;
@@ -302,7 +382,7 @@ async function elementToPdf(element) {
 
         return {
             text,
-            margin: [0, 0, 0, 7]
+            margin: [0, 0, 0, 5]
         };
     }
 
@@ -321,17 +401,48 @@ async function elementToPdf(element) {
                 lineWidth: 0.8,
                 lineColor: pdfColors.line
             }],
-            margin: [0, 10, 0, 10]
+            margin: [0, 8, 0, 8]
         };
     }
 
     if (tag === "TABLE") {
+        if (element.classList.contains("abbreviation-grid")) {
+            const abbreviationRows = Array.from(element.rows).map(row =>
+                Array.from(row.cells).map(cell => ({
+                    text: compactInlineFragments(getInlineFragments(cell)),
+                    margin: [0, 0.3, 6, 0.3]
+                }))
+            );
+            const abbreviationColumnCount = Math.max(
+                ...abbreviationRows.map(row => row.length)
+            );
+
+            return {
+                table: {
+                    widths: Array(abbreviationColumnCount).fill("*"),
+                    body: abbreviationRows,
+                    dontBreakRows: true
+                },
+                layout: {
+                    hLineWidth: () => 0,
+                    vLineWidth: () => 0,
+                    paddingLeft: () => 0,
+                    paddingRight: () => 8,
+                    paddingTop: () => 0,
+                    paddingBottom: () => 0
+                },
+                fontSize: 8.6,
+                lineHeight: 1.05,
+                margin: [0, 0, 0, 5]
+            };
+        }
+
         const rows = Array.from(element.rows).map((row, rowIndex) =>
             Array.from(row.cells).map(cell => ({
                 text: compactInlineFragments(getInlineFragments(cell)),
                 bold: rowIndex === 0 || cell.tagName === "TH",
                 fillColor: rowIndex === 0 ? "#F1E8DC" : pdfColors.paperTint,
-                margin: [5, 4, 5, 4]
+                margin: [5, 3, 5, 3]
             }))
         );
 
@@ -352,7 +463,7 @@ async function elementToPdf(element) {
                 paddingTop: () => 0,
                 paddingBottom: () => 0
             },
-            margin: [0, 4, 0, 12]
+            margin: [0, 3, 0, 9]
         };
     }
 
@@ -361,24 +472,25 @@ async function elementToPdf(element) {
             .filter(child => child.tagName === "LI")
             .map(item => ({
                 text: compactInlineFragments(getInlineFragments(item)),
-                margin: [0, 1, 0, 2]
+                margin: [0, 0.5, 0, 1.5]
             }));
 
         return {
             [tag === "OL" ? "ol" : "ul"]: items,
-            margin: [18, 1, 0, 8]
+            margin: [18, 1, 0, 6]
         };
     }
 
     if (tag === "BLOCKQUOTE") {
         const stack = await childrenToPdf(element);
         const isCallout = element.classList.contains("pattern-callout");
+        const isShareCallout = element.classList.contains("pattern-share-callout");
 
         if (!isCallout) {
             return {
                 stack,
                 bold: true,
-                margin: [0, 8, 0, 10]
+                margin: [0, 6, 0, 8]
             };
         }
 
@@ -389,7 +501,7 @@ async function elementToPdf(element) {
                 body: [[{
                     stack,
                     fillColor: pdfColors.purpleTint,
-                    margin: [10, 7, 10, 6]
+                    margin: isShareCallout ? [10, 4, 10, 3] : [10, 7, 10, 6]
                 }]]
             },
             layout: {
@@ -402,21 +514,92 @@ async function elementToPdf(element) {
                 paddingTop: () => 0,
                 paddingBottom: () => 0
             },
-            margin: [0, 7, 0, 12]
+            margin: isShareCallout ? [0, 2, 0, 4] : [0, 6, 0, 9]
+        };
+    }
+
+    if (tag === "DIV" && element.classList.contains("pattern-image-pair")) {
+        const caption = element.querySelector(".pattern-image-pair-caption");
+        const images = Array.from(element.querySelectorAll("img"));
+        const renderedCaption = caption ? await elementToPdf(caption) : null;
+        const renderedImages = await Promise.all(images.map(async image => {
+            const rendered = await imageElementToPdf(image, {
+                margin: [0, 0, 0, 0]
+            });
+
+            if (rendered.image) {
+                delete rendered.fit;
+                rendered.width = 105;
+            }
+
+            return {
+                width: "*",
+                stack: [rendered]
+            };
+        }));
+
+        return {
+            stack: [
+                renderedCaption,
+                {
+                    columns: renderedImages,
+                    columnGap: 12
+                }
+            ].filter(Boolean),
+            unbreakable: true,
+            margin: [0, 2, 0, 4]
+        };
+    }
+
+    if (tag === "DIV" && element.classList.contains("pattern-image-aside")) {
+        const instructionElement = Array.from(element.children)
+            .find(child => !child.querySelector("img"));
+        const image = element.querySelector("img");
+        const instructionContent = instructionElement
+            ? await elementToPdf(instructionElement)
+            : null;
+        const renderedImage = image
+            ? await imageElementToPdf(image, { margin: [0, 0, 0, 0] })
+            : null;
+
+        if (renderedImage?.image) {
+            delete renderedImage.fit;
+            renderedImage.width = Math.min(renderedImage.width ?? 150, 150);
+        }
+
+        return {
+            columns: [
+                { width: "*", stack: instructionContent ? [instructionContent] : [] },
+                { width: 160, stack: renderedImage ? [renderedImage] : [] }
+            ],
+            columnGap: 12,
+            unbreakable: true,
+            margin: [0, 2, 0, 8]
         };
     }
 
     if (tag === "DIV" && element.classList.contains("pattern-brand")) {
         const logo = element.querySelector("img");
         const title = element.querySelector("h1");
+        const logoLink = logo?.closest("a")?.href ?? instagramUrl;
         const logoData = logo ? await imageToDataUrl(logo.getAttribute("src")) : null;
+        const roundLogoSvg = logoData ? `
+            <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 52 52">
+                <defs>
+                    <clipPath id="logo-circle"><circle cx="26" cy="26" r="24"/></clipPath>
+                </defs>
+                <circle cx="26" cy="26" r="25" fill="#F8F1FD" stroke="#8F29E8" stroke-width="1.5"/>
+                <image href="${logoData}" x="2" y="2" width="48" height="48" preserveAspectRatio="xMidYMid slice" clip-path="url(#logo-circle)"/>
+            </svg>
+        ` : null;
 
         return {
             columns: [
-                logoData ? { image: logoData, fit: [52, 52], width: 58 } : { text: "", width: 0 },
+                roundLogoSvg ? { svg: roundLogoSvg, width: 52, link: logoLink } : { text: "", width: 0 },
                 {
                     text: title?.textContent ?? "Oh It's Wool",
                     style: "brandTitle",
+                    link: instagramUrl,
                     margin: [0, 13, 0, 0]
                 }
             ],
@@ -429,10 +612,14 @@ async function elementToPdf(element) {
         const stack = await childrenToPdf(element);
         if (!stack.length) return null;
 
+        const isInstructionBlock = element.classList.contains("pattern-instruction-block");
+        const isSectionStart = element.classList.contains("pattern-section-start");
+
         return {
             stack,
-            margin: element.classList.contains("pattern-instruction-block")
-                ? [0, 3, 0, 6]
+            unbreakable: isInstructionBlock || isSectionStart,
+            margin: isInstructionBlock
+                ? [0, 2, 0, 4]
                 : [0, 0, 0, 0]
         };
     }
@@ -453,7 +640,7 @@ async function buildPdfDefinition(patternHtml) {
             subject: "Made-to-measure knitting pattern"
         },
         pageSize: "LETTER",
-        pageMargins: [54, 48, 54, 50],
+        pageMargins: [54, 44, 54, 48],
         background: () => ({
             canvas: [{
                 type: "rect",
@@ -480,7 +667,11 @@ async function buildPdfDefinition(patternHtml) {
                 },
                 {
                     columns: [
-                        { text: "© Oh It's Wool · @ohitswool", color: pdfColors.muted },
+                        {
+                            text: "© Oh It's Wool · @ohitswool",
+                            color: pdfColors.muted,
+                            link: instagramUrl
+                        },
                         {
                             text: `Page ${currentPage} of ${pageCount}`,
                             alignment: "right",
@@ -495,9 +686,9 @@ async function buildPdfDefinition(patternHtml) {
         content,
         defaultStyle: {
             font: "Roboto",
-            fontSize: 10.3,
+            fontSize: 10.2,
             color: pdfColors.ink,
-            lineHeight: 1.3
+            lineHeight: 1.24
         },
         styles: {
             brandTitle: {
@@ -515,19 +706,19 @@ async function buildPdfDefinition(patternHtml) {
                 fontSize: 18,
                 bold: true,
                 color: pdfColors.ink,
-                margin: [0, 14, 0, 7]
+                margin: [0, 11, 0, 6]
             },
             heading3: {
                 fontSize: 13.5,
                 bold: true,
                 color: pdfColors.ink,
-                margin: [0, 10, 0, 5]
+                margin: [0, 8, 0, 4]
             },
             heading4: {
                 fontSize: 11,
                 bold: true,
                 color: pdfColors.ink,
-                margin: [0, 8, 0, 4]
+                margin: [0, 6, 0, 3]
             }
         },
         pageBreakBefore: (currentNode, followingNodesOnPage) =>

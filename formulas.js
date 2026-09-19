@@ -59,7 +59,7 @@ function calculatePattern(inputs) {
     const halfArmholeRows = makeEven((armhole / 2) * rowsPerCm);
 
     // Back neck and shoulder shaping
-    const BACK_SHAPING_ST = 30;
+    const BACK_SHAPING_ST = 13 * stitchesPerCm; // 13 cm of shaping across the back neck and shoulders
     const backCastOnSt = Math.round(
         (shoulderSt - BACK_SHAPING_ST) / 2
     );
@@ -72,9 +72,8 @@ function calculatePattern(inputs) {
     // stitch every row per panel.
     const backCenterCastOnSt =
         shoulderSt
-        - (2 * backCastOnSt)
-        - backIncRows / 2
-        - (backFastIncRows);
+        - 2 *
+        (backCastOnSt + backIncRows / 2 + backFastIncRows);
 
     const armholeStToAdd = Math.round(
         (bustSt / 2 - shoulderSt) / 2
@@ -98,9 +97,9 @@ function calculatePattern(inputs) {
     const frontFastIncWorkRows = frontFastIncRows + 1; // even; finish on RS
     const frontCenterCastOnSt =
         shoulderSt
-        - (2 * backCastOnSt)
-        - frontIncRows / 2
-        - frontFastIncRows
+        - 2 * (backCastOnSt
+            + frontIncRows / 2
+            + frontFastIncRows)
         + FRONT_CENTER_ADJUST_ST;
 
     // Front armhole shaping
@@ -131,10 +130,10 @@ function calculatePattern(inputs) {
         + frontIncRows / 2
         + frontFastIncRows
         + FRONT_CENTER_ADJUST_ST
-        + armholeIncRows
+        + armholeIncRows / 2
         + armholeFastIncRows;
 
-    // TODO: Replace these sleeve placeholders after confirming the shaping.
+
     const puffNess = 7;
     const sleeveCastOnSt = makeEven(upperArm * stitchesPerCm * (1 + puffNess / 10));
 
@@ -142,8 +141,8 @@ function calculatePattern(inputs) {
     const sleeveFirstRSExtraSt = Math.round(5 / 10 * puffNess * stitchesPerCm * 3); // 5 mm * puffNess
     const sleeveFirstWSSt = sleeveFirstRSExtraSt * 2;
     const sleeveStBeforeMarker = sleeveCastOnSt / 8;
-    const sleeveShortRowStepSt = 1; // This will determine the length of your cap sleeve. Input a value from 1 to 3. 1 being a short sleeve/long cap sleeve and 3 being the shortest cap sleeve. Both my samples used 1.
-    const sleeveShortRowRepeats = Math.round(puffNess / 2);
+    const sleeveShortRowStepSt = 1;
+    const sleeveShortRowRepeats = makeEven(puffNess / 2);
     // Each side of the box pleat combines three equal stitch groups into one.
     const sleevePleatGroupSt = Math.max(
         1,

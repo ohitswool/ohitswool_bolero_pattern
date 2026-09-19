@@ -1,6 +1,7 @@
-![Oh It's Wool logo](assets/ohitswoollogo.png)
+[![Oh It's Wool logo](assets/ohitswoollogo.png)](https://www.instagram.com/ohitswool/)
 
 # Oh It's Wool
+
 
 ## Made-to-Measure Bolero Free Pattern
 
@@ -12,7 +13,41 @@ This pattern was generated from your measurements.
 >
 > Please share a link to the original pattern instead of reposting it.
 >
-> You may sell a small number of finished, handmade pieces made from this pattern. Please credit **Oh It's Wool (@ohitswool)** as the designer.
+> You may sell a small number of finished, handmade pieces made from this pattern. Please credit [**Oh It's Wool (@ohitswool)**](https://www.instagram.com/ohitswool/) as the designer.
+
+
+### Abbreviations
+
+<table class="abbreviation-grid">
+  <tbody>
+    <tr>
+      <td><strong>K:</strong> knit</td>
+      <td><strong>P:</strong> purl</td>
+      <td><strong>st(s):</strong> stitch(es)</td>
+      <td><strong>RS:</strong> right side</td>
+    </tr>
+    <tr>
+      <td><strong>WS:</strong> wrong side</td>
+      <td><strong>SM:</strong> stitch marker</td>
+      <td><strong>SMB:</strong> buttonhole marker</td>
+      <td><strong>YO:</strong> yarn over</td>
+    </tr>
+    <tr>
+      <td><strong>K2tog:</strong> knit 2 together</td>
+      <td><strong>K3tog:</strong> knit 3 together</td>
+      <td><strong>LLI:</strong> left lifted increase</td>
+      <td><strong>RLI:</strong> right lifted increase</td>
+    </tr>
+    <tr>
+      <td><strong>LLIP:</strong> left lifted purl increase</td>
+      <td><strong>RLIP:</strong> right lifted purl increase</td>
+      <td><strong>GSR:</strong> German short row</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+
 
 | Measurement | Value |
 |---|---:|
@@ -25,6 +60,11 @@ This pattern was generated from your measurements.
 
 
 ---
+
+
+
+
+
 
 ## Back Right
 
@@ -77,7 +117,7 @@ Repeat the following rows for **{backFastIncRows} rows**, finishing with a WS ro
 
 Join the two back panels as follows:
 
-![Back panel joining diagram](assets/back_panel_join.JPEG)
+![Back panel joining diagram](assets/back_panel_join.JPEG "pdf-width=250")
 
 - **Back Left:** Turn work, so it is now an RS row. K to 2 sts before end of row, RLI, K2.
 - **Cast on:** Using the [backward-loop cast-on method](https://www.youtube.com/shorts/ssOZa5XrIfE), cast on **{backCenterCastOnSt} sts**.
@@ -110,7 +150,8 @@ Repeat the following rows for **{armholeFastIncRows} rows**, finishing with a WS
 
 
 With RS facing you, pick up **{backCastOnSt} sts** from the Back Right shoulder.
-![Front Right pickup diagram](assets/right_front_pickup.JPEG)
+
+![Front Right pickup diagram](assets/right_front_pickup.JPEG "pdf-width=250")
 
 Repeat the following rows until you have worked **{frontStraightRows} rows** in total.
 
@@ -172,7 +213,8 @@ Repeat the following rows for **{armholeFastIncRows} rows**, finishing with a WS
 ## Front Left (Button Side)
 
 Pick up **{backCastOnSt} sts** from the Back Left shoulder.
-![Front Left pickup diagram](assets/left_front_pickup.JPEG)
+
+![Front Left pickup diagram](assets/left_front_pickup.JPEG "pdf-width=250")
 
 Repeat the following rows until you have worked **{frontStraightRows} rows** in total.
 
@@ -227,7 +269,7 @@ Connect the panels as follows:
 
 - **RS:** Knit across the Front Left panel, Back panel, and Front Right panel.
 
-![Connect Front Left, Back and Front Right diagram](assets/all_panel_join.JPEG "pdf-width=300")
+![Connect Front Left, Back and Front Right diagram](assets/all_panel_join.JPEG "pdf-width=180")
 
 Repeat the following rows to your desired length, end with a WS row. In my bolero samples, I worked **3 rows**.
 
@@ -247,7 +289,7 @@ With the RS facing, transfer **{leftFrontHoldSt} Front Left sts** from Needle A 
 
 Starting at the center of the left underarm, attach the yarn. Using the right tip of **Needle A**, knit across the Back until **{frontCenterCastOnSt} Front Right sts** remain on the left tip.
 
-![Ribbing setup showing where to attach the yarn and how to knit across the Back](<assets/3-needle join set up.png>)
+![Ribbing setup showing where to attach the yarn and how to knit across the Back](<assets/3-needle join set up.png> "pdf-width=230")
 
 Arrange the needles for a [three-needle join](https://www.youtube.com/watch?v=9MXIccZnqdo):
 
@@ -259,11 +301,11 @@ Join the overlapping Front Right and Front Left layers as follows:
 - K2tog using 1 st from the left tip of Needle A and 1 st from Needle B.
 - Repeat **{frontCenterCastOnSt} times**, keeping the joined sts live on the right tip of Needle A.
 
-![Three-needle join with Needle A in front and Needle B behind](<assets/3-needle join.png>)
+![Three-needle join with Needle A in front and Needle B behind](<assets/3-needle join.png> "pdf-width=230")
 
 - Knit the remaining sts from Needle B onto Needle A.
 
-![Knitting the remaining stitches from Needle B onto Needle A](<assets/knit rest of needle b.png>)
+![Knitting the remaining stitches from Needle B onto Needle A](<assets/knit rest of needle b.png> "pdf-width=230")
 
 You are now back at the center of the left underarm.
 
@@ -282,14 +324,14 @@ Bind off using a stretchy method. An Italian bind-off is recommended.
 
 Pick up sts around the neckline opening using the guide above and the direction shown below.
 
-![Neckline I-cord pickup diagram](assets/neckline_pickup.JPEG)
+![Neckline I-cord pickup diagram](assets/neckline_pickup.JPEG "pdf-width=150")
 
 
 [Knitted cast on](https://www.youtube.com/shorts/XHlFvhqIyeo) **3 sts**.
 Work back along the neckline. Repeat until all picked-up sts have been worked:
 
 - **Along the edge:** K2, K2tog, then slip the 3 sts back to the left needle.
-- **At each sharp corner:** K3, then slip the 3 sts back to the left needle.
+- **At each sharp corner, do this once:** K3, then slip the 3 sts back to the left needle.
 
 Using the [I-cord bind-off method](https://www.youtube.com/shorts/ZW4afVEPpJA), bind off the remaining 3 sts and leave a long tail.
 
@@ -350,6 +392,14 @@ Slip SM2.
 
 K to SM1, then bind off using the standard method.
 
+This is what the completed sleeve-cap pleats look like from two angles:
+
+![Completed sleeve-cap pleats, first view](assets/sleeve-cap-pleats-1.jpg "pdf-pair")
+
+![Completed sleeve-cap pleats, second view](assets/sleeve-cap-pleats-2.jpg "pdf-pair")
+
+
+
 ### Sew On the Sleeves
 
 Attach each sleeve using the guide below.
@@ -388,6 +438,6 @@ Weave in all ends. Gently block the finished bolero to shape, allowing the seams
 
 > **Share your bolero**
 >
-> I would love to see what you make! If you post your bolero on Instagram, please tag **@ohitswool**.
+> I would love to see what you make! If you post your bolero on Instagram, please tag [**@ohitswool**](https://www.instagram.com/ohitswool/).
 >
-> Follow **@ohitswool** for more patterns and knitting projects in the future.
+> Follow [**@ohitswool**](https://www.instagram.com/ohitswool/) for more patterns and knitting projects in the future.
