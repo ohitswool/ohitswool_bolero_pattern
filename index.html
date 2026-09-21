@@ -7,7 +7,7 @@
 
   <title>Oh It's Wool Pattern Generator</title>
 
-  <link rel="stylesheet" href="style.css?v=20260921-1" />
+  <link rel="stylesheet" href="style.css?v=20260921-2" />
 
   <!-- Markdown renderer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -287,8 +287,10 @@
         </table>
 
         <div class="swatch-yarn-estimator">
-          <label for="swatchYarnLength">Yarn used for this gauge swatch</label>
-          <p class="swatch-yarn-unit-help">Enter the amount and choose meters, centimeters, or yards.</p>
+          <div class="swatch-yarn-heading">
+            <label for="swatchYarnLength">Yarn used for this gauge swatch</label>
+            <p class="swatch-yarn-unit-help">Enter the amount and choose meters, centimeters, or yards.</p>
+          </div>
           <div class="swatch-yarn-control">
             <input id="swatchYarnLength" type="number" min="0" step="0.1" inputmode="decimal" value="4">
             <select id="swatchYarnUnit" aria-label="Swatch yarn length unit">
@@ -297,16 +299,15 @@
               <option value="cm">centimeters</option>
             </select>
           </div>
-          <p>Measure the yarn used in the same stitch-and-row rectangle entered above. Exclude tails and border
-            stitches. <span class="held-yarn-note">If you held two or more yarns together, measure the length used by
-              just one strand. The estimate is the amount needed for each yarn, not a total to divide between them.
-              For example, if you held Yarn A and Yarn B together and the estimate is 400 m, plan for 400 m of Yarn A
-              and 400 m of Yarn B.</span></p>
+          <p class="swatch-yarn-measure-note">Measure only the yarn used in the stitch-and-row rectangle entered
+            above. Exclude tails and border stitches.</p>
+          <p class="held-yarn-note"><strong>Holding yarns together?</strong> Measure one strand from the swatch. The
+            estimate applies to each yarn separately—for example, 400 m means 400 m of Yarn A plus 400 m of Yarn B.</p>
           <output id="yarnEstimateOutput" class="yarn-estimate-output" for="swatchYarnLength swatchYarnUnit">
             Enter the yarn used in your swatch to estimate the project yardage.
           </output>
-          <p class="yarn-estimate-note">Rough guide only. The estimate assumes the sample body length and includes
-            15% extra for shaping, seaming, tails, and swatching.</p>
+          <p class="yarn-estimate-note">Rough guide based on your entered finished length. Includes 15% extra for
+            shaping, seaming, tails, and swatching.</p>
         </div>
       </div>
 
@@ -339,8 +340,8 @@
     </section>
   </main>
 
-  <script src="formulas.js?v=20260921-1"></script>
-  <script src="app.js?v=20260921-1"></script>
+  <script src="formulas.js?v=20260921-2"></script>
+  <script src="app.js?v=20260921-2"></script>
 
 </body>
 

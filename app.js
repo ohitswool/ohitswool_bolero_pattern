@@ -27,7 +27,7 @@ if (window.pdfjsLib) {
 }
 
 async function loadPatternTemplate() {
-    const response = await fetch("pattern.md?v=20260921-1");
+    const response = await fetch("pattern.md?v=20260921-2");
     patternTemplate = await response.text();
     updatePreview();
 }

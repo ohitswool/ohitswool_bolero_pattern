@@ -587,21 +587,26 @@ button span {
 }
 
 .swatch-yarn-estimator {
-    margin: 10px 0 2px;
-    padding: 14px;
-    border-top: 1px solid #e3d9ce;
+    margin: 12px 0 2px;
+    padding: 13px;
+    border: 1px solid #dfd2c4;
+    border-radius: 12px;
+    background: #fffaf4;
 }
 
-.swatch-yarn-estimator label {
+.swatch-yarn-heading label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 3px;
     color: #554940;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
 }
 
-.swatch-yarn-estimator>.swatch-yarn-unit-help {
-    margin: -2px 0 9px;
+.swatch-yarn-heading .swatch-yarn-unit-help {
+    margin: 0 0 9px;
+    color: #796c62;
+    font-size: 10.5px;
+    line-height: 1.35;
 }
 
 .swatch-yarn-control {
@@ -624,7 +629,7 @@ button span {
     font-size: 14px;
 }
 
-.swatch-yarn-estimator>p {
+.swatch-yarn-measure-note {
     margin: 8px 0 0;
     color: #796c62;
     font-size: 11px;
@@ -632,7 +637,14 @@ button span {
 }
 
 .swatch-yarn-estimator .held-yarn-note {
-    color: #8f29e8;
+    margin: 9px 0 0;
+    padding: 8px 9px;
+    border-left: 3px solid #8f29e8;
+    border-radius: 0 8px 8px 0;
+    background: #f8f1fd;
+    color: #68437f;
+    font-size: 10.5px;
+    line-height: 1.4;
 }
 
 .yarn-estimate-output {
@@ -649,8 +661,10 @@ button span {
 }
 
 .swatch-yarn-estimator>.yarn-estimate-note {
+    margin: 7px 0 0;
     color: #8c7d71;
     font-size: 10px;
+    line-height: 1.35;
 }
 
 .preview-panel {
