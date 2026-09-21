@@ -55,9 +55,13 @@ This pattern was generated from your measurements.
 | Shoulder seam width | {shoulder} cm |
 | Armhole | {armhole} cm |
 | Upper arm circumference | {upperArm} cm |
+| Finished shoulder-to-hem length | {finishedLengthCm} cm |
 | Gauge Across | {gaugeAcrossSts} sts / {gaugeAcrossCm} cm |
 | Gauge Down | {gaugeDownRows} rows / {gaugeDownCm} cm |
+| Yarn used for gauge swatch | {swatchYarnDisplay} |
+| Estimated yarn needed | **{estimatedYarnDisplay}** |
 
+> **Yarn estimate:** This is a rough, stitch-based guide based on your finished length, with 15% extra included for shaping, seaming, tails, and swatching. If you hold two or more yarns together, measure the length used by just one strand of your gauge swatch. The estimate is the amount needed for each yarn, not a total to divide between them. For example, if you hold Yarn A and Yarn B together and the estimate is 400 m, plan for 400 m of Yarn A and 400 m of Yarn B.
 
 ---
 
@@ -271,7 +275,9 @@ Connect the panels as follows:
 
 ![Connect Front Left, Back and Front Right diagram](assets/all_panel_join.JPEG "pdf-width=180")
 
-Repeat the following rows to your desired length, end with a WS row. In my bolero samples, I worked **3 rows**.
+Based on your finished-length measurement(substract 2.5cm for the ribbing, but if you want diff ribbing length. adjust accordingly), repeat the following rows for **{joinedBodyRows} rows**—ending with a WS row.
+
+
 
 - **WS:** P1, K1, P1, K1, P to 4 sts before the end of the row, K1, P1, K1, P1.
 - **RS:** K1, P1, K1, P1, K to 4 sts before the end of the row, P1, K1, P1, K1.
@@ -309,8 +315,7 @@ Join the overlapping Front Right and Front Left layers as follows:
 
 You are now back at the center of the left underarm.
 
-Switch to needles **1 mm smaller** and work **2 × 2 ribbing** in the round to your desired length (I knit for **1 inch / 2.5 cm**).
-
+Switch to needles **1 mm smaller** and work **2 × 2 ribbing** in the round until it measures approximately **2.5 cm / 1 in**.
 Bind off using a stretchy method. An Italian bind-off is recommended.
 
 ## Neckline I-Cord Edging

@@ -419,8 +419,15 @@ button span {
     font-family: Georgia, "Times New Roman", serif;
     font-size: 18px;
     font-weight: 500;
-    margin-bottom: 10px;
+    margin-bottom: 3px;
     text-align: left;
+}
+
+.measurement-photo-hint {
+    margin: 0 0 10px;
+    color: #7a6d62;
+    font-size: 13px;
+    line-height: 1.4;
 }
 
 .measurement-box {
@@ -443,6 +450,10 @@ button span {
     border-bottom: 0;
 }
 
+.measurement-row-compact {
+    grid-template-columns: 1fr;
+}
+
 .measurement-photo {
     display: block;
     overflow: hidden;
@@ -457,6 +468,10 @@ button span {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.measurement-photo-length img {
+    object-position: center top;
 }
 
 .measurement-entry {
@@ -500,6 +515,23 @@ button span {
 .measurement-control span {
     color: #8c7d71;
     font-size: 12px;
+}
+
+.finished-length-warning {
+    display: block;
+    margin-top: 10px;
+    padding: 9px 11px;
+    border-left: 3px solid #c87952;
+    border-radius: 0 9px 9px 0;
+    background: #fff1e8;
+    color: #744a37;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.45;
+}
+
+.finished-length-warning[hidden] {
+    display: none;
 }
 
 .gauge-title {
@@ -552,6 +584,73 @@ button span {
     background: #f7f1e9;
     color: #302720;
     font-size: 15px;
+}
+
+.swatch-yarn-estimator {
+    margin: 10px 0 2px;
+    padding: 14px;
+    border-top: 1px solid #e3d9ce;
+}
+
+.swatch-yarn-estimator label {
+    display: block;
+    margin-bottom: 8px;
+    color: #554940;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.swatch-yarn-estimator>.swatch-yarn-unit-help {
+    margin: -2px 0 9px;
+}
+
+.swatch-yarn-control {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(112px, 0.9fr);
+    gap: 8px;
+}
+
+.swatch-yarn-control input,
+.swatch-yarn-control select {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 9px 8px;
+    border: 1px solid #d8cbbc;
+    border-radius: 9px;
+    background: #f7f1e9;
+    color: #302720;
+    font: inherit;
+    font-size: 14px;
+}
+
+.swatch-yarn-estimator>p {
+    margin: 8px 0 0;
+    color: #796c62;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.swatch-yarn-estimator .held-yarn-note {
+    color: #8f29e8;
+}
+
+.yarn-estimate-output {
+    display: block;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-left: 3px solid #8f29e8;
+    border-radius: 0 9px 9px 0;
+    background: #f8f1fd;
+    color: #4f3e57;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.swatch-yarn-estimator>.yarn-estimate-note {
+    color: #8c7d71;
+    font-size: 10px;
 }
 
 .preview-panel {

@@ -166,6 +166,7 @@
       </aside>
 
       <div class="measurement-title">Your measurements</div>
+      <p class="measurement-photo-hint">Click any photo to enlarge it and see clearly where to measure.</p>
       <div class="measurement-box">
         <div class="measurement-row">
           <a class="measurement-photo" href="assets/measurement-bust.png" target="_blank" rel="noopener"
@@ -229,6 +230,25 @@
           </div>
         </div>
 
+        <div class="measurement-row">
+          <a class="measurement-photo measurement-photo-length" href="assets/measurement-length.jpeg" target="_blank" rel="noopener"
+            aria-label="Open the finished shoulder-to-hem length measurement photo">
+            <img src="assets/measurement-length.jpeg"
+              alt="Measuring vertically from the top of the shoulder to the desired bolero hem">
+          </a>
+          <div class="measurement-entry">
+            <label for="finishedLengthCm">finished shoulder-to-hem length</label>
+            <p>Measure from the top of your shoulder seam to where you want the finished bolero to end. This must be
+              at least half your armhole measurement plus 2.5 cm.</p>
+            <div class="measurement-control">
+              <input id="finishedLengthCm" type="number" value="22.5" min="0" step="0.1" inputmode="decimal">
+              <span>cm</span>
+            </div>
+            <output id="finishedLengthWarning" class="finished-length-warning" for="finishedLengthCm armhole"
+              hidden></output>
+          </div>
+        </div>
+
       </div>
       <div class="gauge-title">Your gauge</div>
       <div class="gauge-box">
@@ -265,6 +285,29 @@
             </tr>
           </tbody>
         </table>
+
+        <div class="swatch-yarn-estimator">
+          <label for="swatchYarnLength">Yarn used for this gauge swatch</label>
+          <p class="swatch-yarn-unit-help">Enter the amount and choose meters, centimeters, or yards.</p>
+          <div class="swatch-yarn-control">
+            <input id="swatchYarnLength" type="number" min="0" step="0.1" inputmode="decimal" value="4">
+            <select id="swatchYarnUnit" aria-label="Swatch yarn length unit">
+              <option value="m">meters</option>
+              <option value="yd">yards</option>
+              <option value="cm">centimeters</option>
+            </select>
+          </div>
+          <p>Measure the yarn used in the same stitch-and-row rectangle entered above. Exclude tails and border
+            stitches. <span class="held-yarn-note">If you held two or more yarns together, measure the length used by
+              just one strand. The estimate is the amount needed for each yarn, not a total to divide between them.
+              For example, if you held Yarn A and Yarn B together and the estimate is 400 m, plan for 400 m of Yarn A
+              and 400 m of Yarn B.</span></p>
+          <output id="yarnEstimateOutput" class="yarn-estimate-output" for="swatchYarnLength swatchYarnUnit">
+            Enter the yarn used in your swatch to estimate the project yardage.
+          </output>
+          <p class="yarn-estimate-note">Rough guide only. The estimate assumes the sample body length and includes
+            15% extra for shaping, seaming, tails, and swatching.</p>
+        </div>
       </div>
 
       <button id="downloadBtn">

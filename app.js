@@ -38,17 +38,22 @@ function getInputs() {
 
     const gaugeDownRows = Number(document.getElementById("gaugeDownRows").value);
     const gaugeDownCm = Number(document.getElementById("gaugeDownCm").value);
+    const swatchYarnLength = Number(document.getElementById("swatchYarnLength").value);
+    const swatchYarnUnit = document.getElementById("swatchYarnUnit").value;
 
     return {
         bust: Number(document.getElementById("bust").value),
         shoulder: Number(document.getElementById("shoulder").value),
         armhole: Number(document.getElementById("armhole").value),
         upperArm: Number(document.getElementById("upperArm").value),
+        finishedLengthCm: Number(document.getElementById("finishedLengthCm").value),
 
         gaugeAcrossSts,
         gaugeAcrossCm,
         gaugeDownRows,
         gaugeDownCm,
+        swatchYarnLength,
+        swatchYarnUnit,
 
         gaugeAcross: gaugeAcrossSts / gaugeAcrossCm,
         gaugeDown: gaugeDownRows / gaugeDownCm
@@ -377,6 +382,10 @@ async function elementToPdf(element) {
 
         if (level === 2 && element.textContent.trim() === "Finishing") {
             heading.margin = [0, 8, 0, 4];
+        }
+
+        if (level === 2 && element.textContent.trim() === "Join Back Right and Back Left") {
+            heading.pageBreak = "before";
         }
 
         return heading;
@@ -888,10 +897,28 @@ async function updatePreview() {
 
 function schedulePreviewUpdate() {
     clearTimeout(previewTimer);
+    updateYarnEstimateOutput();
     const status = document.getElementById("previewStatus");
     status.hidden = false;
     status.textContent = "Updating pages…";
     previewTimer = setTimeout(updatePreview, 350);
+}
+
+function updateYarnEstimateOutput() {
+    const yarnOutput = document.getElementById("yarnEstimateOutput");
+    const lengthWarning = document.getElementById("finishedLengthWarning");
+    const values = calculatePattern(getInputs());
+
+    lengthWarning.hidden = values.hasValidFinishedLength;
+    lengthWarning.textContent = values.hasValidFinishedLength
+        ? ""
+        : `This length is too short. It must be at least ${values.minimumFinishedLengthCm} cm—half your armhole measurement plus 2.5 cm.`;
+
+    yarnOutput.textContent = !values.hasValidFinishedLength
+        ? "Correct the finished-length measurement to calculate the project yardage."
+        : values.estimatedYarnMeters > 0
+            ? `Estimated project yarn: ${values.estimatedYarnMeters} m / ${values.estimatedYarnYards} yd`
+            : "Enter the yarn used in your swatch to estimate the project yardage.";
 }
 
 async function downloadPDF() {
@@ -927,10 +954,13 @@ async function downloadPDF() {
     "shoulder",
     "armhole",
     "upperArm",
+    "finishedLengthCm",
     "gaugeAcrossSts",
     "gaugeAcrossCm",
     "gaugeDownRows",
-    "gaugeDownCm"
+    "gaugeDownCm",
+    "swatchYarnLength",
+    "swatchYarnUnit"
 ].forEach(id => {
     const element = document.getElementById(id);
     if (element) {
@@ -980,4 +1010,5 @@ window.addEventListener("beforeunload", () => {
     mobilePdfDocument?.destroy();
 });
 
+updateYarnEstimateOutput();
 loadPatternTemplate();
