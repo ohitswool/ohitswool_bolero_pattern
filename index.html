@@ -7,7 +7,7 @@
 
   <title>Oh It's Wool Pattern Generator</title>
 
-  <link rel="stylesheet" href="style.css?v=20260921-2" />
+  <link rel="stylesheet" href="style.css?v=20260921-3" />
 
   <!-- Markdown renderer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -288,8 +288,10 @@
 
         <div class="swatch-yarn-estimator">
           <div class="swatch-yarn-heading">
-            <label for="swatchYarnLength">Yarn used for this gauge swatch</label>
-            <p class="swatch-yarn-unit-help">Enter the amount and choose meters, centimeters, or yards.</p>
+            <span class="swatch-yarn-kicker">Yarn calculator</span>
+            <label for="swatchYarnLength">Yarn used in your gauge swatch</label>
+            <p class="swatch-yarn-unit-help">Measure the yarn used inside the gauge rectangle above, excluding tails
+              and border stitches. Then enter the amount and choose a unit.</p>
           </div>
           <div class="swatch-yarn-control">
             <input id="swatchYarnLength" type="number" min="0" step="0.1" inputmode="decimal" value="4">
@@ -299,8 +301,6 @@
               <option value="cm">centimeters</option>
             </select>
           </div>
-          <p class="swatch-yarn-measure-note">Measure only the yarn used in the stitch-and-row rectangle entered
-            above. Exclude tails and border stitches.</p>
           <p class="held-yarn-note"><strong>Holding yarns together?</strong> Measure one strand from the swatch. The
             estimate applies to each yarn separately—for example, 400 m means 400 m of Yarn A plus 400 m of Yarn B.</p>
           <output id="yarnEstimateOutput" class="yarn-estimate-output" for="swatchYarnLength swatchYarnUnit">

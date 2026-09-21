@@ -588,21 +588,38 @@ button span {
 
 .swatch-yarn-estimator {
     margin: 12px 0 2px;
-    padding: 13px;
+    padding: 15px;
     border: 1px solid #dfd2c4;
+    border-top: 3px solid #8f29e8;
     border-radius: 12px;
-    background: #fffaf4;
+    background: linear-gradient(180deg, #fffdf9 0%, #fff9f2 100%);
+    box-shadow: 0 7px 18px rgba(76, 59, 45, 0.06);
 }
 
-.swatch-yarn-heading label {
+.swatch-yarn-kicker {
     display: block;
-    margin-bottom: 3px;
-    color: #554940;
-    font-size: 14px;
-    font-weight: 700;
+    margin-bottom: 4px;
+    color: #8f29e8;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    text-transform: uppercase;
 }
 
-.swatch-yarn-heading .swatch-yarn-unit-help {
+.swatch-yarn-heading label,
+.swatch-yarn-estimator>label {
+    display: block;
+    margin-bottom: 5px;
+    color: #554940;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.22;
+}
+
+.swatch-yarn-heading .swatch-yarn-unit-help,
+.swatch-yarn-estimator>.swatch-yarn-unit-help {
     margin: 0 0 9px;
     color: #796c62;
     font-size: 10.5px;
@@ -621,15 +638,22 @@ button span {
     box-sizing: border-box;
     margin: 0;
     padding: 9px 8px;
-    border: 1px solid #d8cbbc;
+    border: 1px solid #d4c4b3;
     border-radius: 9px;
-    background: #f7f1e9;
+    background: #ffffff;
     color: #302720;
     font: inherit;
     font-size: 14px;
 }
 
-.swatch-yarn-measure-note {
+.swatch-yarn-control input:focus,
+.swatch-yarn-control select:focus {
+    border-color: #aa64e7;
+    outline: 3px solid rgba(143, 41, 232, 0.12);
+}
+
+.swatch-yarn-measure-note,
+.swatch-yarn-estimator>p:not(.held-yarn-note):not(.yarn-estimate-note):not(.swatch-yarn-unit-help) {
     margin: 8px 0 0;
     color: #796c62;
     font-size: 11px;
@@ -637,8 +661,9 @@ button span {
 }
 
 .swatch-yarn-estimator .held-yarn-note {
+    display: block;
     margin: 9px 0 0;
-    padding: 8px 9px;
+    padding: 9px 10px;
     border-left: 3px solid #8f29e8;
     border-radius: 0 8px 8px 0;
     background: #f8f1fd;
@@ -650,10 +675,10 @@ button span {
 .yarn-estimate-output {
     display: block;
     margin-top: 12px;
-    padding: 10px 12px;
+    padding: 11px 12px;
     border-left: 3px solid #8f29e8;
     border-radius: 0 9px 9px 0;
-    background: #f8f1fd;
+    background: linear-gradient(90deg, #f6ebff 0%, #fbf7ff 100%);
     color: #4f3e57;
     font-size: 13px;
     font-weight: 700;
