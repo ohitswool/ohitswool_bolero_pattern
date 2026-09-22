@@ -32,21 +32,26 @@ async function loadPatternTemplate() {
     updatePreview();
 }
 
-function getInputs() {
-    const gaugeAcrossSts = Number(document.getElementById("gaugeAcrossSts").value);
-    const gaugeAcrossCm = Number(document.getElementById("gaugeAcrossCm").value);
+function getNumberInputValue(id, emptyValue = NaN) {
+    const rawValue = document.getElementById(id).value.trim();
+    return rawValue === "" ? emptyValue : Number(rawValue);
+}
 
-    const gaugeDownRows = Number(document.getElementById("gaugeDownRows").value);
-    const gaugeDownCm = Number(document.getElementById("gaugeDownCm").value);
-    const swatchYarnLength = Number(document.getElementById("swatchYarnLength").value);
+function getInputs() {
+    const gaugeAcrossSts = getNumberInputValue("gaugeAcrossSts");
+    const gaugeAcrossCm = getNumberInputValue("gaugeAcrossCm");
+
+    const gaugeDownRows = getNumberInputValue("gaugeDownRows");
+    const gaugeDownCm = getNumberInputValue("gaugeDownCm");
+    const swatchYarnLength = getNumberInputValue("swatchYarnLength", 0);
     const swatchYarnUnit = document.getElementById("swatchYarnUnit").value;
 
     return {
-        bust: Number(document.getElementById("bust").value),
-        shoulder: Number(document.getElementById("shoulder").value),
-        armhole: Number(document.getElementById("armhole").value),
-        upperArm: Number(document.getElementById("upperArm").value),
-        finishedLengthCm: Number(document.getElementById("finishedLengthCm").value),
+        bust: getNumberInputValue("bust"),
+        shoulder: getNumberInputValue("shoulder"),
+        armhole: getNumberInputValue("armhole"),
+        upperArm: getNumberInputValue("upperArm"),
+        finishedLengthCm: getNumberInputValue("finishedLengthCm"),
 
         gaugeAcrossSts,
         gaugeAcrossCm,
@@ -58,6 +63,44 @@ function getInputs() {
         gaugeAcross: gaugeAcrossSts / gaugeAcrossCm,
         gaugeDown: gaugeDownRows / gaugeDownCm
     };
+}
+
+function hasValidCalculationInputs(inputs) {
+    const positiveWholeNumberValues = [
+        inputs.gaugeAcrossSts,
+        inputs.gaugeDownRows
+    ];
+    const positiveValues = [
+        inputs.bust,
+        inputs.shoulder,
+        inputs.armhole,
+        inputs.upperArm,
+        inputs.gaugeAcrossCm,
+        inputs.gaugeDownCm,
+        inputs.gaugeAcross,
+        inputs.gaugeDown
+    ];
+    const nonNegativeValues = [
+        inputs.finishedLengthCm,
+        inputs.swatchYarnLength
+    ];
+
+    return positiveWholeNumberValues.every(value => Number.isInteger(value) && value > 0)
+        && positiveValues.every(value => Number.isFinite(value) && value > 0)
+        && nonNegativeValues.every(value => Number.isFinite(value) && value >= 0);
+}
+
+function updateWholeNumberInputValidation() {
+    ["gaugeAcrossSts", "gaugeDownRows"].forEach(id => {
+        const input = document.getElementById(id);
+        const error = document.getElementById(`${id}Error`);
+        const value = getNumberInputValue(id);
+        const hasFraction = Number.isFinite(value) && !Number.isInteger(value);
+
+        input.toggleAttribute("aria-invalid", hasFraction);
+        input.setCustomValidity(hasFraction ? "Use a whole number." : "");
+        error.hidden = !hasFraction;
+    });
 }
 
 function fillTemplate(template, values) {
@@ -855,12 +898,19 @@ async function updatePreview() {
     const version = ++renderVersion;
     const preview = document.getElementById("preview");
     const status = document.getElementById("previewStatus");
+    const inputs = getInputs();
+
+    if (!hasValidCalculationInputs(inputs)) {
+        status.hidden = false;
+        status.textContent = "Enter valid values in all fields.";
+        return null;
+    }
 
     status.hidden = false;
     status.textContent = currentPdfBlob ? "Updating pages…" : "Preparing paginated preview…";
 
     try {
-        const values = calculatePattern(getInputs());
+        const values = calculatePattern(inputs);
         const filledMarkdown = fillTemplate(patternTemplate, values);
         const patternHtml = formatPattern(filledMarkdown);
         const documentDefinition = await buildPdfDefinition(patternHtml);
@@ -897,17 +947,28 @@ async function updatePreview() {
 
 function schedulePreviewUpdate() {
     clearTimeout(previewTimer);
-    updateYarnEstimateOutput();
     const status = document.getElementById("previewStatus");
+    updateWholeNumberInputValidation();
+
+    const inputs = getInputs();
+    if (!hasValidCalculationInputs(inputs)) {
+        status.hidden = false;
+        status.textContent = "Enter valid values in all fields.";
+        return;
+    }
+
+    updateYarnEstimateOutput(inputs);
     status.hidden = false;
     status.textContent = "Updating pages…";
     previewTimer = setTimeout(updatePreview, 350);
 }
 
-function updateYarnEstimateOutput() {
+function updateYarnEstimateOutput(inputs = getInputs()) {
     const yarnOutput = document.getElementById("yarnEstimateOutput");
     const lengthWarning = document.getElementById("finishedLengthWarning");
-    const values = calculatePattern(getInputs());
+    if (!hasValidCalculationInputs(inputs)) return;
+
+    const values = calculatePattern(inputs);
 
     lengthWarning.hidden = values.hasValidFinishedLength;
     lengthWarning.textContent = values.hasValidFinishedLength
@@ -918,7 +979,7 @@ function updateYarnEstimateOutput() {
         ? "Correct the finished-length measurement to calculate the project yardage."
         : values.estimatedYarnMeters > 0
             ? `Estimated project yarn: ${values.estimatedYarnMeters} m / ${values.estimatedYarnYards} yd`
-            : "Enter the yarn used in your swatch to estimate the project yardage.";
+            : "Estimated project yarn: none — swatch yardage not entered.";
 }
 
 async function downloadPDF() {
@@ -1010,5 +1071,6 @@ window.addEventListener("beforeunload", () => {
     mobilePdfDocument?.destroy();
 });
 
+updateWholeNumberInputValidation();
 updateYarnEstimateOutput();
 loadPatternTemplate();

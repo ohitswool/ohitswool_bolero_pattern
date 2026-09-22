@@ -11,6 +11,8 @@ function greatestCommonDivisor(first, second) {
     let a = Math.abs(Math.round(first));
     let b = Math.abs(Math.round(second));
 
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return 1;
+
     while (b !== 0) {
         [a, b] = [b, a % b];
     }
@@ -172,7 +174,7 @@ function calculatePattern(inputs) {
     const sleeveStraightRounds = Math.round(5 * rowsPerCm); // 5 cm
     const sleeveFirstRSExtraSt = Math.round(5 / 10 * puffNess * stitchesPerCm * 3); // 5 mm * puffNess
     const sleeveFirstWSSt = sleeveFirstRSExtraSt * 2;
-    const sleeveStBeforeMarker = sleeveCastOnSt / 8;
+    const sleeveStBeforeMarker = Math.round(sleeveCastOnSt / 8);
     const sleeveShortRowStepSt = 1;
     const sleeveShortRowRepeats = makeEven(puffNess / 2);
     // Each side of the box pleat combines three equal stitch groups into one.
@@ -396,7 +398,7 @@ function calculatePattern(inputs) {
         ? "Check your finished-length measurement"
         : estimatedYarnMeters > 0
             ? `approximately ${estimatedYarnMeters} m / ${estimatedYarnYards} yd`
-            : "Enter your swatch yarn use in the generator";
+            : "None — swatch yardage not entered";
 
 
     return {

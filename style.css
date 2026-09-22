@@ -586,6 +586,27 @@ button span {
     font-size: 15px;
 }
 
+.gauge-table input[aria-invalid="true"] {
+    border-color: #b42318;
+    background: #fff7f6;
+}
+
+.gauge-count-error {
+    display: block;
+    margin-top: 4px;
+    color: #9f3f36;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 10px;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+}
+
+.gauge-count-error[hidden] {
+    display: none;
+}
+
 .swatch-yarn-estimator {
     margin: 12px 0 2px;
     padding: 15px;

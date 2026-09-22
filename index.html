@@ -177,7 +177,7 @@
             <label for="bust">bust</label>
             <p>Measure around the fullest part, keeping the tape level.</p>
             <div class="measurement-control">
-              <input id="bust" type="number" value="83">
+              <input id="bust" type="number" value="83" min="0.1" step="0.1" inputmode="decimal">
               <span>cm</span>
             </div>
           </div>
@@ -193,7 +193,7 @@
             <p>Measure from one shoulder seam to the other—not the outer edges of your shoulders. Wear a
               well-fitting tank top as a guide.</p>
             <div class="measurement-control">
-              <input id="shoulder" type="number" value="28">
+              <input id="shoulder" type="number" value="28" min="0.1" step="0.1" inputmode="decimal">
               <span>cm</span>
             </div>
           </div>
@@ -209,7 +209,7 @@
             <p>Loop the tape over the top of your shoulder and under your arm. Keep your arm relaxed and the tape
               comfortably not too tight.</p>
             <div class="measurement-control">
-              <input id="armhole" type="number" value="38">
+              <input id="armhole" type="number" value="38" min="0.1" step="0.1" inputmode="decimal">
               <span>cm</span>
             </div>
           </div>
@@ -224,7 +224,7 @@
             <label for="upperArm">upper arm circumference</label>
             <p>Measure around your upper arm while keeping your arm relaxed.</p>
             <div class="measurement-control">
-              <input id="upperArm" type="number" value="24.5" step="0.1">
+              <input id="upperArm" type="number" value="24.5" min="0.1" step="0.1" inputmode="decimal">
               <span>cm</span>
             </div>
           </div>
@@ -258,7 +258,7 @@
           <thead>
             <tr>
               <th></th>
-              <th>st count</th>
+              <th>st / row count</th>
               <th>cm</th>
             </tr>
           </thead>
@@ -267,20 +267,26 @@
             <tr>
               <th>across</th>
               <td>
-                <input id="gaugeAcrossSts" type="number" value="15">
+                <input id="gaugeAcrossSts" type="number" value="15" min="1" step="1" inputmode="numeric"
+                  aria-describedby="gaugeAcrossStsError">
+                <span id="gaugeAcrossStsError" class="gauge-count-error" aria-live="polite" hidden>Use a whole
+                  number.</span>
               </td>
               <td>
-                <input id="gaugeAcrossCm" type="number" value="6.5" step="0.1">
+                <input id="gaugeAcrossCm" type="number" value="6.5" min="0.1" step="0.1">
               </td>
             </tr>
 
             <tr>
               <th>down</th>
               <td>
-                <input id="gaugeDownRows" type="number" value="15">
+                <input id="gaugeDownRows" type="number" value="15" min="1" step="1" inputmode="numeric"
+                  aria-describedby="gaugeDownRowsError">
+                <span id="gaugeDownRowsError" class="gauge-count-error" aria-live="polite" hidden>Use a whole
+                  number.</span>
               </td>
               <td>
-                <input id="gaugeDownCm" type="number" value="5" step="0.1">
+                <input id="gaugeDownCm" type="number" value="5" min="0.1" step="0.1">
               </td>
             </tr>
           </tbody>
@@ -304,7 +310,7 @@
           <p class="held-yarn-note"><strong>Holding yarns together?</strong> Measure one strand from the swatch. The
             estimate applies to each yarn separately—for example, 400 m means 400 m of Yarn A plus 400 m of Yarn B.</p>
           <output id="yarnEstimateOutput" class="yarn-estimate-output" for="swatchYarnLength swatchYarnUnit">
-            Enter the yarn used in your swatch to estimate the project yardage.
+            Estimated project yarn: none — swatch yardage not entered.
           </output>
           <p class="yarn-estimate-note">Rough guide based on your entered finished length. Includes 15% extra for
             shaping, seaming, tails, and swatching.</p>
